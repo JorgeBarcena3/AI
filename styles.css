@@ -1,0 +1,72 @@
+body {
+    font-family: 'Source Sans Pro';
+    background: #FFF;
+    background-size: cover;
+}
+
+.FlexContainer {
+    background: yellow;
+    height: 50vh;
+    /*IMPORTANTE*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.GameContainer {
+    background: red;
+    width: 84vw;
+    height: 84vw;
+}
+
+.game-field {
+    width: 28vw;
+    height: 28vw;
+    float: left;
+}
+
+.green {
+    background: green;
+}
+
+.blue {
+    background: blue;
+}
+
+.purple {
+    background: purple;
+}
+
+.orange {
+    background: orangered;
+}
+
+.PanelGanador {
+    background: red;
+    height: 25vh;
+    /*IMPORTANTE*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#TextoFinal {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 9vw;
+    text-align: center;
+}
+
+.BotonesFinales {
+    background: red;
+    height: 24vh;
+    /*IMPORTANTE*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.boton {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 9vw;
+    text-align: center;
+}
