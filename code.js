@@ -21,9 +21,10 @@ function crearTablero() {
     });
 }
 
-function selectBox(box) {
+function selectBox(box, isMachine = false) {
 
-    if (TURNO != "") {
+    
+    if (TURNO === "MIN" || (TURNO === "MAX" && isMachine) ){
         let object = $("#" + box)[0];
 
         if (object.classList.contains("blue"))
@@ -52,11 +53,13 @@ function selectBox(box) {
         }
 
         if (TURNO === "MAX") {
-            turnoDeMAX(TABLERO);
+            turnoDeMAX(TABLERO)
+
         }
     }
 
 }
+
 
 function acabarElJuego() {
     TURNO = "";
@@ -69,7 +72,7 @@ function restart() {
         "undefined", "undefined", "undefined",
         "undefined", "undefined", "undefined"
     ];
-    $("#TextoFinal")[0].innerText = "";
+    $("#TextoFinal")[0].innerText = "¡Tres en raya!";
     crearTablero();
 }
 
@@ -112,16 +115,12 @@ function checkIfGanador() {
 }
 
 function turnoDeMAX(_tablero) {
-    let pos;
 
-    var movimientoGanador = MINIMAX(_tablero, 1, 0, -10, +10);
-    for (let i = 0; i < _tablero.length; i++) {
-        if (_tablero[i] != movimientoGanador.tablero[i]) {
-            pos = i;
-        }
-    }
-
-    selectBox(pos.toString());
+    var movimientoGanador = MINIMAX(_tablero, 1);
+ 
+    setTimeout(function(){
+        selectBox(movimientoGanador.index, true);
+    }, 500);
 
 }
 
@@ -152,117 +151,89 @@ function esGanador(_tablero, _turno) {
     return false;
 }
 
-function esPerdedor(_tablero, _turno) {
 
-    let comprobar = _turno == 1 ? "MAX" : "MIN"; // Por defecto compruebo para MAX
+function generarSucesores(_tablero) {
 
-    if (
-        (_tablero[2] === comprobar && _tablero[5] === comprobar && _tablero[8] === comprobar) ||
-        (_tablero[0] === comprobar && _tablero[1] === comprobar && _tablero[2] === comprobar) ||
-        (_tablero[3] === comprobar && _tablero[4] === comprobar && _tablero[5] === comprobar) ||
-        (_tablero[6] === comprobar && _tablero[7] === comprobar && _tablero[8] === comprobar) ||
-        (_tablero[0] === comprobar && _tablero[3] === comprobar && _tablero[6] === comprobar) ||
-        (_tablero[1] === comprobar && _tablero[4] === comprobar && _tablero[7] === comprobar) ||
-        (_tablero[0] === comprobar && _tablero[4] === comprobar && _tablero[8] === comprobar) ||
-        (_tablero[6] === comprobar && _tablero[4] === comprobar && _tablero[2] === comprobar)
-    ) {
-        return true
-    }
+    let sucesores = [];
 
-    return false;
-}
-
-function esEmpate(_tablero) {
-    let index = 0;
-    for (element of _tablero) {
-        if (element === "undefined")
-            index++;
-    }
-
-    if (index <= 0)
-        return true;
-    return false;
-}
-
-function generarSucesores(_tablero, _turno) {
-
-    let turno = _turno == 1 ? "MAX" : "MIN";
-    let undefinedIndex = new Array();
     for (let i = 0; i < _tablero.length; i++) {
-        if (_tablero[i] === "undefined") undefinedIndex.push(i);
-    }
-    let tableros = new Array();
-    for (let i = 0; i < undefinedIndex.length; i++) {
-        let __tablero = [..._tablero];
-        __tablero[undefinedIndex[i]] = turno;
-        tableros.push(__tablero);
+        if (_tablero[i] === "undefined") {
+            sucesores.push(i);
+        }
     }
 
-    return tableros;
+    return sucesores;
+
 
 }
 
-function max(a, b) {
-    if (a.value >= b.value) {
-        a.tablero = b.tablero;
-        return a;
-    }
-    return b;
-}
 
-function min(a, b) {
-    if (a.value <= b.value) {
-        a.tablero = b.tablero;
-        return a;
-    }
-    return b;
-}
 
-function evaluacion(_tablero) {
 
-}
-
-let LIMITE = 3;
+let LIMITE = 4;
 /**
  * Algoritmo de MINMAX para obtener la mejor jugada
  * TURNO == 1 -- MAX - TURNO == 2 -- MIN
  */
-function MINIMAX(_tablero, _turno, _nivel, alpha, beta) {
+function MINIMAX(_tablero, _turno) {
+
+    let sucesores = generarSucesores(_tablero, _turno);
     //Casos finales
-    if (esGanador(_tablero, _turno))
-        return { value: 10, tablero: _tablero };
-    else if (esPerdedor(_tablero, _turno))
-        return { value: -10, tablero: _tablero };
-    else if (esEmpate(_tablero))
-        return { value: 0, tablero: _tablero };
-    else if (_turno == 1) { //Turno de max
-        let mejorVal;
+    if (esGanador(_tablero, 1)) //AI WIN
+        return { score: 10 };
+    else if (esGanador(_tablero, 2)) //PLAYER WIN
+        return { score: -10 };
+    else if (sucesores.length == 0)
+        return { score: 0 };
 
-        let sucesores = generarSucesores(_tablero, _turno);
-        for (let element of sucesores) {
-            mejorVal = { value: -10000, tablero: element };
-            let valor = MINIMAX(element, 2, _nivel + 1, alpha, beta);
-            mejorVal = max(valor, mejorVal);
-            alpha = Math.max(alpha, mejorVal.value);
-            if (beta <= alpha)
-                break;
+    let moves = []; //collect the scores from each of the empty spots to evaluate them later    
 
-        }
-        return mejorVal;
+    for (let i = 0; i < sucesores.length; i++) {
+        var move = {};
+        move.index = sucesores[i]; //setting the index number of the empty spot, that was store as a number in the origBoard, to the index property of the move object
+        _tablero[sucesores[i]] = _turno == 1 ? "MAX" : "MIN";
 
-    } else { //ES MIN
+        if (_turno == 1) {
 
-        let mejorVal;
-        let sucesores = generarSucesores(_tablero, _turno);
-        for (let element of sucesores) {
-            mejorVal = { value: 10000, tablero: element };
-            let valor = MINIMAX(element, 1, _nivel + 1, alpha, beta);
-            mejorVal = min(valor, mejorVal);
-            beta = Math.min(beta, mejorVal.value);
-            if (beta <= alpha)
-                break;
+            let valor = MINIMAX(_tablero, 2);
+            move.score = valor.score;
+
+        } else {
+
+            let valor = MINIMAX(_tablero, 1);
+            move.score = valor.score;
 
         }
-        return mejorVal;
+
+        _tablero[sucesores[i]] = "undefined"; // minimax resets newBoard to what it was before
+
+        moves.push(move);
+
     }
+
+    var bestMove; //minimax algorithm evaluates the best move in the moves array
+    if (_turno == 1) {  //choosing the highest score when AI is playing and the lowest score when the human is playing            
+        var bestScore = -10000; //if the player is AI player, it sets variable bestScore to a very low number
+        for (var i = 0; i < moves.length; i++) { //looping through the moves array
+            if (moves[i].score > bestScore) { //if a move has a higher score than the bestScore, the algorithm stores that move
+                bestScore = moves[i].score;
+                bestMove = i; //if there are moves with similar scores, only the first will be stored
+            }
+        }
+    } else { // when human Player
+        var bestScore = 10000;
+        for (var i = 0; i < moves.length; i++) {
+            if (moves[i].score < bestScore) { //minimax looks for a move with the lowest score to store
+                bestScore = moves[i].score;
+                bestMove = i;
+            }
+        }
+    }
+
+    return moves[bestMove]; //returning object stored in bestMove
+
+
+
+
+
 }

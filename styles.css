@@ -5,7 +5,7 @@ body {
 }
 
 .FlexContainer {
-    background: yellow;
+    background: #6666FF;
     height: 50vh;
     /*IMPORTANTE*/
     display: flex;
@@ -14,7 +14,7 @@ body {
 }
 
 .GameContainer {
-    background: red;
+    background: black;
     width: 84vw;
     height: 84vw;
 }
@@ -26,23 +26,30 @@ body {
 }
 
 .green {
-    background: green;
+    background: #DCDCDC	;
 }
 
 .blue {
-    background: blue;
+    background: #D8D8D8;
 }
 
 .purple {
-    background: purple;
+    background-image: url("./media/MAX.png");
+  background-position: center center;
+  background-size: contain;
+  background-color: #E0E0E0	;
+
 }
 
 .orange {
-    background: orangered;
+    background-image: url("./media/MIN.png");
+    background-position: center center;
+    background-size: contain;
+    background-color: #E0E0E0	;
 }
 
 .PanelGanador {
-    background: red;
+    background: black;
     height: 25vh;
     /*IMPORTANTE*/
     display: flex;
@@ -54,10 +61,12 @@ body {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 9vw;
     text-align: center;
+    color:white;
+
 }
 
 .BotonesFinales {
-    background: red;
+    background: black;
     height: 24vh;
     /*IMPORTANTE*/
     display: flex;
