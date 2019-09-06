@@ -167,10 +167,6 @@ function generarSucesores(_tablero) {
 
 }
 
-
-
-
-let LIMITE = 4;
 /**
  * Algoritmo de MINMAX para obtener la mejor jugada
  * TURNO == 1 -- MAX - TURNO == 2 -- MIN
@@ -186,11 +182,11 @@ function MINIMAX(_tablero, _turno, _nivel) {
     else if (sucesores.length == 0)
         return { score: 0 };
 
-    let moves = []; //collect the scores from each of the empty spots to evaluate them later    
+    let moves = [];
 
     for (let i = 0; i < sucesores.length; i++) {
         var move = {};
-        move.index = sucesores[i]; //setting the index number of the empty spot, that was store as a number in the origBoard, to the index property of the move object
+        move.index = sucesores[i];
         _tablero[sucesores[i]] = _turno == 1 ? "MAX" : "MIN";
 
         if (_turno == 1) {
@@ -205,32 +201,32 @@ function MINIMAX(_tablero, _turno, _nivel) {
 
         }
 
-        _tablero[sucesores[i]] = "undefined"; // minimax resets newBoard to what it was before
+        _tablero[sucesores[i]] = "undefined";
 
         moves.push(move);
 
     }
 
-    var bestMove; //minimax algorithm evaluates the best move in the moves array
-    if (_turno == 1) { //choosing the highest score when AI is playing and the lowest score when the human is playing            
-        var bestScore = -10000; //if the player is AI player, it sets variable bestScore to a very low number
-        for (var i = 0; i < moves.length; i++) { //looping through the moves array
-            if (moves[i].score > bestScore) { //if a move has a higher score than the bestScore, the algorithm stores that move
+    var mejorMovimiento;
+    if (_turno == 1) {
+        var bestScore = -10000;
+        for (var i = 0; i < moves.length; i++) {
+            if (moves[i].score > bestScore) {
                 bestScore = moves[i].score;
-                bestMove = i; //if there are moves with similar scores, only the first will be stored
+                mejorMovimiento = i;
             }
         }
-    } else { // when human Player
+    } else {
         var bestScore = 10000;
         for (var i = 0; i < moves.length; i++) {
-            if (moves[i].score < bestScore) { //minimax looks for a move with the lowest score to store
+            if (moves[i].score < bestScore) {
                 bestScore = moves[i].score;
-                bestMove = i;
+                mejorMovimiento = i;
             }
         }
     }
 
-    return moves[bestMove]; //returning object stored in bestMove
+    return moves[mejorMovimiento];
 
 
 
