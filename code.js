@@ -23,8 +23,8 @@ function crearTablero() {
 
 function selectBox(box, isMachine = false) {
 
-    
-    if (TURNO === "MIN" || (TURNO === "MAX" && isMachine) ){
+
+    if (TURNO === "MIN" || (TURNO === "MAX" && isMachine)) {
         let object = $("#" + box)[0];
 
         if (object.classList.contains("blue"))
@@ -116,9 +116,9 @@ function checkIfGanador() {
 
 function turnoDeMAX(_tablero) {
 
-    var movimientoGanador = MINIMAX(_tablero, 1);
- 
-    setTimeout(function(){
+    var movimientoGanador = MINIMAX(_tablero, 1, 0);
+
+    setTimeout(function() {
         selectBox(movimientoGanador.index, true);
     }, 500);
 
@@ -175,14 +175,14 @@ let LIMITE = 4;
  * Algoritmo de MINMAX para obtener la mejor jugada
  * TURNO == 1 -- MAX - TURNO == 2 -- MIN
  */
-function MINIMAX(_tablero, _turno) {
+function MINIMAX(_tablero, _turno, _nivel) {
 
     let sucesores = generarSucesores(_tablero, _turno);
     //Casos finales
     if (esGanador(_tablero, 1)) //AI WIN
-        return { score: 10 };
+        return { score: 10 - _nivel };
     else if (esGanador(_tablero, 2)) //PLAYER WIN
-        return { score: -10 };
+        return { score: -10 + _nivel };
     else if (sucesores.length == 0)
         return { score: 0 };
 
@@ -195,12 +195,12 @@ function MINIMAX(_tablero, _turno) {
 
         if (_turno == 1) {
 
-            let valor = MINIMAX(_tablero, 2);
+            let valor = MINIMAX(_tablero, 2, _nivel + 1);
             move.score = valor.score;
 
         } else {
 
-            let valor = MINIMAX(_tablero, 1);
+            let valor = MINIMAX(_tablero, 1, _nivel + 1);
             move.score = valor.score;
 
         }
@@ -212,7 +212,7 @@ function MINIMAX(_tablero, _turno) {
     }
 
     var bestMove; //minimax algorithm evaluates the best move in the moves array
-    if (_turno == 1) {  //choosing the highest score when AI is playing and the lowest score when the human is playing            
+    if (_turno == 1) { //choosing the highest score when AI is playing and the lowest score when the human is playing            
         var bestScore = -10000; //if the player is AI player, it sets variable bestScore to a very low number
         for (var i = 0; i < moves.length; i++) { //looping through the moves array
             if (moves[i].score > bestScore) { //if a move has a higher score than the bestScore, the algorithm stores that move
