@@ -72,8 +72,18 @@ function restart() {
         "undefined", "undefined", "undefined",
         "undefined", "undefined", "undefined"
     ];
+
     $("#TextoFinal")[0].innerText = "¡Tres en raya!";
     crearTablero();
+    
+    let empezar = getRandomArbitrary(1, 3);
+    if (empezar == 1) {
+        let posicion = getRandomArbitrary(0, 9);
+        TURNO = "MAX"; //MIN ES EL JUGADOR
+        selectBox(posicion, true);
+    }
+
+
 }
 
 function mostrarGanador() {
@@ -118,7 +128,7 @@ function turnoDeMAX(_tablero) {
 
     var movimientoGanador = MINIMAX(_tablero, 1, 0);
 
-    setTimeout(function() {
+    setTimeout(function () {
         selectBox(movimientoGanador.index, true);
     }, 500);
 
