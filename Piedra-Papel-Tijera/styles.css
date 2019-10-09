@@ -11,7 +11,7 @@ body {
 
 .ActionContainer{
     text-align: center;
-    margin-top: 5vh;
+    margin-top: 3vh;
 }
 
 .eleccionAcctiones{
@@ -51,4 +51,30 @@ body {
     background-position: center center;
     background-size: cover;
     background-color: grey;
+}
+
+.Winner{
+    text-align: center;
+}
+
+.green{
+    color:green;
+}
+
+.red{
+    color:red;
+}
+
+.white{
+    color:white;
+}
+
+.stats{
+    display: inline-flex;    
+    margin-top: 2vh;
+}
+
+.stats div{
+    text-align: center;
+    width: 30vw;
 }

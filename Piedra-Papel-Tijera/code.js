@@ -25,6 +25,7 @@ function init(){
     scorePlayer = 0;
     scoreIA = 0;
     numAction = [acciones.PIEDRA, acciones.PAPEL, acciones.TIJERA];
+    UCB1Scores=[];
     count = [];
     score = [];
     for(let i = 0; i < numAction.length; i++)
@@ -38,16 +39,16 @@ function init(){
 function play()
 {
 
-    debugger;
     var result = getNectActionUCB1();
 
     
     $("#EleccionAI").removeClass();
     $("#EleccionAI").addClass("Eleccion");
 
-    if(result == acciones[0])
+
+    if(result == 0)
         $("#EleccionAI").addClass("PIEDRA");
-    else  if(result == acciones[1])
+    else  if(result == 1)
          $("#EleccionAI").addClass("PAPEL");
     else 
         $("#EleccionAI").addClass("TIJERAS");
@@ -73,7 +74,7 @@ function getNectActionUCB1()
 
     //Si ya ha probado todas la acciones entonces aplica UCB1.
     let best = -1;
-    let bestScore =  UCB1(score[0] / (count[0]), count[0], TotalActions);
+    let bestScore =  -10000;
     let tempScore = 0;
 
     for(let i = 0; i < numAction.length; i++)
@@ -101,7 +102,7 @@ function TellOponentAction (action)
 {
 
     TotalActions++;
-    score[lastActions] += GetUtility(lastActions, action);
+    score[lastActions] += GetUtility(acciones[lastActions], acciones[action]);
     count[lastActions]++;
 
 }
@@ -121,6 +122,8 @@ function GetUtility(_lastAction, _action)
         utility--;
     else if(_lastAction == acciones[2] && _action == acciones[1])
         utility++;
+    else
+        utility = -0.5;
 
     return utility;
 }
@@ -131,9 +134,9 @@ function SelectOption(_action){
     $("#EleccionJugador").removeClass();
     $("#EleccionJugador").addClass("Eleccion");
 
-    if(_action == 1)
+    if(_action == 0)
         $("#EleccionJugador").addClass("PIEDRA");
-    else  if(_action == 2)
+    else  if(_action == 1)
          $("#EleccionJugador").addClass("PAPEL");
     else 
         $("#EleccionJugador").addClass("TIJERAS");
@@ -142,14 +145,38 @@ function SelectOption(_action){
 
     let IaAction = play();
 
-    if(GetUtility(IaAction, acciones[_action]) == 1)
+    if(GetUtility(acciones[IaAction], acciones[_action]) == 1)
     {
+        $("#WhoWin").removeClass();
+        $("#WhoWin").addClass("Winner");
+        $("#WhoWin").addClass("red");
+        $("#WhoWin").text("Has perdido");
+
         scoreIA++;
 
-    } else if(GetUtility(IaAction, acciones[ _action]) == -1)
+    } else if(GetUtility(acciones[IaAction], acciones[ _action]) == -1)
     {
+
+        $("#WhoWin").removeClass();
+        $("#WhoWin").addClass("Winner");
+        $("#WhoWin").addClass("green");
+        $("#WhoWin").text("Has ganado");
+
         scorePlayer++;
+    }    else
+    {
+        
+        $("#WhoWin").removeClass();
+        $("#WhoWin").addClass("Winner");
+        $("#WhoWin").addClass("white");
+        $("#WhoWin").text("Es empate");
+
     }
 
     TellOponentAction(_action);
+
+    $("#Piedra").text("PIEDRA: " + UCB1(score[0] / (count[0]), count[0], TotalActions).toFixed(2));
+    $("#Papel").text("PAPEL: " + UCB1(score[1] / (count[1]), count[1], TotalActions).toFixed(2));
+    $("#Tijera").text("TIJERA: " + UCB1(score[2] / (count[2]), count[2], TotalActions).toFixed(2));
+
 }
