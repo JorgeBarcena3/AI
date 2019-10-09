@@ -3,3 +3,20 @@ body {
     background: black;
     background-size: cover;
 }
+
+.tituloWeb{
+    text-align: center;
+    color: white;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+}
+
+.enlace{
+    padding: 6px;
+    background: lightgrey;
+}
+
+.enlace a:active{
+    background: red;
+}
+
