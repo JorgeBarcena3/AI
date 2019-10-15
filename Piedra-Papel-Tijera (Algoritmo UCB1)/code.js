@@ -39,7 +39,7 @@ function init(){
 function play()
 {
 
-    var result = getNectActionUCB1();
+    var result = getNextActionUCB1();
 
     
     $("#EleccionAI").removeClass();
@@ -59,7 +59,7 @@ function play()
 }
 
 
-function getNectActionUCB1()
+function getNextActionUCB1()
 {
 
     //Prueba todas las acciones que no ha probado
