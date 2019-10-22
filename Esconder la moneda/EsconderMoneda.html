@@ -19,7 +19,19 @@
     <div class="Titulo">
         Deberás escoger en que mano guardaras la moneda. La IA aprenderá de tí para intentar adivinar donde la has
         metido (N-gramas)
+
+        <div class="form-inline" style=" margin-top: 2vh; margin-bottom: -1vh; ">
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="inputVentana" class="sr-only">Nº Ventana</label>
+                <input type="text" class="form-control" id="valueVentana"
+                    placeholder="Nº Ventana (2, por defecto)">
+            </div>
+            <button onclick="cambiarVentana()" class="btn btn-primary mb-2" style=" margin-left: 2vw; ">Cambiar ventana</button>
+        </div>
+
     </div>
+
+
 
 
     <div class="eleccionAcctiones">
@@ -45,7 +57,6 @@
     </div>
 
     <div class="stats white">
-        <div id="InfoText"></div>
         <div id="InfoTable"></div>
     </div>
 

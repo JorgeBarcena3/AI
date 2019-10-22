@@ -84,8 +84,8 @@ class GamePredictor {
 
 class IA {
 
-    constructor() {
-        this.windowSize = 2;
+    constructor(_nVentana = 2) {
+        this.windowSize = _nVentana;
         this.totalActions = "";
         this.posibleActions = "";
         this.predictor = new GamePredictor();
@@ -119,19 +119,19 @@ class IA {
         if (guess == _correctAnswer) {
             this.acierto++;
             frase += "ACIERTO";
-            $("#InfoText").removeClass();
-            $("#InfoText").addClass("green");
+            $("#WhoWin").removeClass();
+            $("#WhoWin").addClass("green");
         } else {
             frase += "FALLO";
-            $("#InfoText").removeClass();
-            $("#InfoText").addClass("red");
+            $("#WhoWin").removeClass();
+            $("#WhoWin").addClass("red");
         }
 
         frase += " Tasa de aciertos: " + (this.acierto / this.total).toFixed(2) + "\n";
 
 
-
-        $("#InfoText").text(frase);
+        $("#WhoWin").addClass("Winner");
+        $("#WhoWin").text(frase);
 
         this.totalActions += _correctAnswer;
         lastActions = this.totalActions.substr(this.totalActions.length - this.windowSize - 1, this.windowSize + 1);
@@ -181,9 +181,18 @@ function SelectOption(opc) {
         $("#EleccionAI").addClass("manoIzq");
     else
         $("#EleccionAI").addClass("manoDech");
+}
 
+function cambiarVentana() {
 
+    let num = parseInt($("#valueVentana").val());
+    if (num === undefined || isNaN(num))
+        num = 2;
 
+    inteligencia = new IA(num);
 
+    //Añadimos todas las posibes acciones
+    inteligencia.addAction('R');
+    inteligencia.addAction('L');
 
 }
