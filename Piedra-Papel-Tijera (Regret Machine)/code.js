@@ -13,6 +13,16 @@ var initialRegret;
 var regret;
 var chance;
 
+var resultSheet = [
+
+    //PIEDRA  PAPEL  TIJERA 
+    [0, -1, 1], //ROCK
+    [1, 0, -1], //PAPEL
+    [-1, 1, 0]  //TIJERAS
+
+];
+
+
 init();
 
 function init() {
@@ -104,21 +114,19 @@ function TellOponentAction(action) {
 }
 
 function GetUtility(_lastAction, _action) {
-    let utility = 0;
-    if (_lastAction == acciones[0] && _action == acciones[1])
-        utility--;
-    else if (_lastAction == acciones[0] && _action == acciones[2])
-        utility++;
-    else if (_lastAction == acciones[1] && _action == acciones[2])
-        utility--;
-    else if (_lastAction == acciones[1] && _action == acciones[0])
-        utility++;
-    else if (_lastAction == acciones[2] && _action == acciones[0])
-        utility--;
-    else if (_lastAction == acciones[2] && _action == acciones[1])
-        utility++;
 
-    return utility;
+    return resultSheet[getNumber(_lastAction)][getNumber(_action)];
+
+}
+
+function getNumber(action) {
+
+    for (let i = 0; i < numAction.length; i++) {
+        if (acciones[i] == action)
+            return i;
+    }
+
+    return -1;
 }
 
 function SelectOption(_action) {
@@ -163,9 +171,13 @@ function SelectOption(_action) {
 
     TellOponentAction(_action);
 
-    $("#Piedra").text("PIEDRA: " + (regret[0] / chance[chance.length - 1] * 100).toFixed(0) + "%");
-    $("#Papel").text("PAPEL: " + ((regret[1] / chance[chance.length - 1] * 100).toFixed(0)) + "%");
-    $("#Tijera").text("TIJERA: " + (regret[2] / chance[chance.length - 1] * 100).toFixed(0) + "%");
+    let RegretTotal =
+        (regret[0] > 0 ? regret[0] : 0) +
+        (regret[1] > 0 ? regret[1] : 0) +
+        (regret[2] > 0 ? regret[2] : 0) ;
 
+    $("#Piedra").text("PIEDRA: " + ((regret[0] > 0 ? regret[0] : 0) / RegretTotal * 100).toFixed(0) + "%");
+    $("#Papel").text("PAPEL: " + ((regret[1] > 0 ? regret[1] : 0) / RegretTotal * 100).toFixed(0) + "%");
+    $("#Tijera").text("TIJERA: " + ((regret[2] > 0 ? regret[2] : 0) / RegretTotal * 100).toFixed(0) + "%");
 
 }
