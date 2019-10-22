@@ -17,6 +17,15 @@ var lastActions;
 var scorePlayer;
 var scoreIA;
 
+var resultSheet = [
+
+    //PIEDRA  PAPEL  TIJERA 
+    [0, -1, 1], //ROCK
+    [1, 0, -1], //PAPEL
+    [-1, 1, 0]  //TIJERAS
+
+];
+
 init();
 
 function init(){
@@ -107,26 +116,22 @@ function TellOponentAction (action)
 
 }
 
-function GetUtility(_lastAction, _action)
-{
-    let utility = 0;
-    if(_lastAction == acciones[0] && _action == acciones[1])
-        utility--;
-    else if(_lastAction == acciones[0] && _action == acciones[2])
-        utility++;
-    else if(_lastAction == acciones[1] && _action == acciones[2])
-        utility--;
-    else if(_lastAction == acciones[1] && _action == acciones[0])
-        utility++;  
-    else if(_lastAction == acciones[2]  && _action == acciones[0])
-        utility--;
-    else if(_lastAction == acciones[2] && _action == acciones[1])
-        utility++;
-    else
-        utility = -0.5;
+function GetUtility(_lastAction, _action) {
 
-    return utility;
+    return resultSheet[getNumber(_lastAction)][getNumber(_action)];
+
 }
+
+function getNumber(action) {
+
+    for (let i = 0; i < numAction.length; i++) {
+        if (acciones[i] == action)
+            return i;
+    }
+
+    return -1;
+}
+
 
 function SelectOption(_action){
     //DRAW THE SPRITE
