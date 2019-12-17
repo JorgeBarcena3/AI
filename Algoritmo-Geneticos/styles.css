@@ -1,0 +1,25 @@
+body {
+    font-family: 'Source Sans Pro';
+    background: black;
+    background-size: cover;
+}
+
+#Titulo {
+    color: white;
+    margin: 2vh;
+    height: 15vh;
+}
+
+#Container {
+    width: 100vw;
+    height: 50vh;
+    background: red;
+}
+
+.flor {
+    width: 10vw;
+    height: 10vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
