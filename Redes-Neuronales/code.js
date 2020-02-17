@@ -1,7 +1,10 @@
 /**
- * Si queremos un output lineal o no
+ * Constantes
  */
-let OUTPUT_LINEAL = true;
+var OUTPUT_LINEAL     = true;
+var RATIO_APRENDIZAJE = 0.3;
+var USO_INERCIA       = true;
+var RATIO_INERCIA    = 0.5;
 
 /**
  * Clase de una red Neuronal al completo
@@ -69,9 +72,43 @@ class RedNeuronal
             }
         }
 
-        return id;
+        return id;  
     }
 
+    /**
+     * Determinamos cual es el output deseado
+     */
+    setOutputDeseado(i, valor)
+    {
+        this.capaSalida.valoresDeseados[i] = valor;
+    }
+
+    /**
+     * Propagacion hacia atras
+     */
+    backPropagation()
+    {
+        this.capaSalida.calcularErrores();
+        this.capaOculta.calcularErrores();
+
+        this.capaOculta.ajustarPesos();
+        this.capaEntrada.ajustarPesos();
+    }
+
+    /**
+     * Calculamos el error total de las capas
+     */
+    calcularError()
+    {
+        let error = 0;
+        for(let i = 0; i < this.capaSalida.numeroNeuronas; i++)
+        {
+            error += Math.pow(this.capaSalida.valoresNeuronas[i] - this.capaSalida.valoresDeseados[i], 2);
+        }
+        error /= this.capaSalida.numeroNeuronas;
+
+        return error;
+    }
 
 }
 
@@ -118,11 +155,11 @@ class Capa
             this.capaSiguiente  = siguiente;
 
             this.pesos          = new Array(this.numeroNeuronas);
-            this.pesos.forEach(function (item) 
+
+            for(let i = 0; i < this.numeroNeuronas; i++)
             {
-                //ERror de inicializacion
-                item = new Array(siguiente.numeroNeuronas);
-            });
+                this.pesos[i] = new Array(siguiente.numeroNeuronas);
+            }
 
             this.biasValores    = new Array(siguiente.numeroNeuronas);
             this.biasPesos      = new Array(siguiente.numeroNeuronas);
@@ -161,13 +198,14 @@ class Capa
 
         if(this.capaSiguiente != null)
         {
-            this.pesos.forEach(function (item) 
+            for(let i = 0; i < this.numeroNeuronas; i++)
             {
-               item.forEach(function (item)
-               {
-                    item = (-1) + ((1) - (-1)) * Math.random();
-               });
-            });
+                for(let j = 0; j < this.capaSiguiente.numeroNeuronas; j++)
+                {
+                    this.pesos[i][j] = (-1) + ((1) - (-1)) * Math.random();
+                }
+
+            }
 
             this.biasPesos.forEach(function (item)
             {
@@ -209,8 +247,70 @@ class Capa
         }
     }
 
+    /**
+     * Cualcula los errores de los pesos
+     */
+    calcularErrores()
+    {
+        if(this.capaSiguiente == null)
+        {
+            for(let i = 0; i < this.numeroNeuronas; i++)
+            {
+                this.errores[i] = (valoresDeseados[i] - this.valoresNeuronas[i]) *
+                                  this.valoresNeuronas[i] *
+                                  (1 - this.valoresNeuronas[i]);
+            }
+        }
+        else if(this.capaAnterior != null)
+        {
+            for(let i = 0; i < this.numeroNeuronas; i++)
+            {
+                let suma = 0;
+                for(let j = 0; j < this.capaSiguiente.numeroNeuronas; j++)
+                {
+                    suma += this.capaSiguiente.errores[i] * this.pesos[i][j];
+                }
+
+                this.errores[i] = suma * this.valoresNeuronas[i] * (1 - this.valoresNeuronas[i]);
+            }
+        }
+
+    }
+
+    /**
+     * Se reajustan los pesos
+     */
+    ajustarPesos()
+    {
+        if(this.capaSiguiente != null)
+        {
+            for(let i = 0; i < this.numeroNeuronas; i++)
+            {
+                for(let j = 0; j < this.capaSiguiente.numeroNeuronas; j++)
+                {
+                    let dw = RATIO_APRENDIZAJE * this.capaSiguiente.errores[j] * this.capaSiguiente.valoresNeuronas[j];
+
+                    if(USO_INERCIA)
+                    {
+                        pesos[i][j] += dw + RATIO_INERCIA * this.pesosIncremento[i][j];
+                        this.pesosIncremento[i][j] = dw;
+                    }
+                    else
+                    {
+                        pesos[i][j] += dw;
+                    }
+                }
+            }
+
+            for(let j = 0; j < this.capaSiguiente.numeroNeuronas; j++)
+            {
+                let dw = RATIO_APRENDIZAJE * this.capaSiguiente.errores[j] * this.biasValores[j];
+                this.biasPesos[j] += dw;
+            }
+
+        }
+    }
+
 }
 
-let red = new RedNeuronal(5);
-
-debugger;
+let red = new RedNeuronal(5,5,5);
